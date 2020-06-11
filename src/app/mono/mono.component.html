@@ -1,0 +1,79 @@
+<div class="outline-container">
+    <div class="visrey-mono-sidebar">
+        <div class="innerWrapper">
+            <div class="vsbar-container">
+                <canvas id="clock" width="120" height="30"></canvas>
+            </div>
+            <hr>
+            <div class="vsbar-container">
+                <h3>Total Confirmed Cases</h3>
+                <p>Updated {{updatedMins}} {{updateTimeUnits}} ago</p>
+                <h1 class="rednumber">{{totalNoOfCases}}</h1>
+            </div>
+            <div class="vsbar-container">
+                <!-- <div class="act">
+                    <p>ACTIVE CASES</p>
+                    <h3>{{ totalActiveCases }}</h3>
+                    <span class="subText">{{changeASymbol}}{{changeInACases}}</span>
+                </div> -->
+            </div>
+            <div class="vsbar-container" style="display: block;">
+                <div style="width: 50%;display: inline-block;">
+                    <div class="rec">
+                        <p>RECOVERED</p>
+                        <h3>{{ totalRecoveredCases }}</h3>
+                        <span class="subText">{{changeRSymbol}}{{changeInRCases}}</span>
+                    </div>
+                </div>
+                <div style="width: 50%;display: inline-block;">
+                    <div class="fat">
+                        <p>FATAL</p>
+                        <h3>{{ totalFatalCases }}</h3>
+                        <span class="subText">{{changeFSymbol}}{{changeInFCases}}</span>
+                    </div>
+                </div>
+                <!-- <div class="nrow">
+                    <div class="sm-dot yfil"></div> <span class="mainText">&nbsp;Active cases {{ totalActiveCases }}</span> <span class="subText">{{changeASymbol}}
+                    {{changeInACases}}</span>
+                </div>
+                <div class="nrow">
+                    <div class="sm-dot gfil"></div> <span class="mainText">&nbsp;Recovered cases {{ totalRecoveredCases }} </span><span class="subText">{{changeRSymbol}}
+                    {{changeInRCases}}</span>
+                </div>
+                <div class="nrow">
+                    <div class="sm-dot nfil"></div> <span class="mainText">&nbsp;Fatal cases {{ totalFatalCases }} </span><span class="subText">{{changeFSymbol}}
+                    {{changeInFCases}}</span>
+                </div> -->
+            </div>
+            <hr>
+            <div class="vsbar-container">
+                <h6>Cases Rate</h6>
+                <ngx-trend autoDraw="true" autoDrawDuration="3000" autoDrawEasing="ease-out" smooth="true"
+                    [data]="[0,1,3,4,5,6,7,8]" [gradient]="['#f4c363']" radius="10"
+                    strokeWidth="2" strokeLinecap="butt">
+                </ngx-trend>
+            </div>
+            <hr>
+            <div class="vsbar-container datacontainer" style="overflow: scroll;height:200px;">
+                <!-- <app-iselector [list]="defaultList"></app-iselector> -->
+                <app-iselector></app-iselector>
+            </div>
+            <p>Hosted on a Raspberry Pi &copy; <a href="https://visrey.me" style="color: #e75480;">visrey.me</a></p>
+        </div>
+    </div>
+    <div class="visrey-mono-container">
+        <div class="overlayContainer firstContainer" style="text-align: center;">
+            <canvas id="infection-circle" width="200" height="200"></canvas>
+            <h5>Infection Rate</h5>
+            <!-- <ngx-trend autoDraw="true" width="200" autoDrawDuration="3000" autoDrawEasing="ease-out" smooth="true"
+                [data]="[0,1,3,4,5,6,7,8]" [gradient]="['red', 'greeen']" radius="10" strokeWidth="2"
+                strokeLinecap="butt">
+            </ngx-trend> -->
+        </div>
+        <div class="overlayContainer secondContainer" style="text-align: center;">
+            <canvas id="fatal-circle" width="200" height="200"></canvas>
+            <h5>Fatality Rate</h5>
+        </div>
+        <app-wmap></app-wmap>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+<!-- <div class="selector-outer-container">
+    <div class="visrey-selector-container" *ngFor="let item of list">
+        <div class="stats">
+            <h4>{{item.name}}</h4>
+            <div class="nrow">
+                <div class="sm-dot yfil"></div>&nbsp;<span>{{item.cases}}</span>&nbsp;<span
+                    class="subText">cases</span>&nbsp;&nbsp;&nbsp;<div class="sm-dot nfil"></div>
+                &nbsp;<span>{{item.deaths}}</span>&nbsp;<span class="subText">deaths</span>
+            </div>
+        </div>
+        <div class="graph">
+            <ngx-trend autoDraw="true" autoDrawDuration="3000" autoDrawEasing="ease-out" smooth="true"
+                [data]="item.trend" [gradient]="['#2196F3']" radius="10" strokeWidth="2" strokeLinecap="butt">
+            </ngx-trend>
+        </div>
+        <hr>
+    </div>
+</div> -->
+<mat-form-field>
+    <mat-label>Filter</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Country Name">
+</mat-form-field>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <!-- Position Column -->
+    <ng-container matColumnDef="country">
+        <th mat-header-cell *matHeaderCellDef> Country </th>
+        <td mat-cell *matCellDef="let element" style="text-align: left;"> {{element.country}} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="cases">
+        <th mat-header-cell *matHeaderCellDef> Cases </th>
+        <td mat-cell *matCellDef="let element"> {{element.cases}} </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="deaths">
+        <th mat-header-cell *matHeaderCellDef> Deaths </th>
+        <td mat-cell *matCellDef="let element"> {{element.deaths}} </td>
+    </ng-container>
+
+    <!-- Symbol Column -->
+    <!-- <ng-container matColumnDef="symbol">
+        <th mat-header-cell *matHeaderCellDef> Symbol </th>
+        <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+    </ng-container> -->
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
