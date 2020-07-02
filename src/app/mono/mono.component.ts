@@ -2,6 +2,8 @@ import { element } from 'protractor';
 import { DataproviderService } from './../service/dataprovider.service';
 import { Component, OnInit, OnDestroy, AfterViewInit } from '@angular/core';
 import * as zeu from 'zeu';
+import {MatSnackBar} from '@angular/material/snack-bar';
+
 // declare  var zeu: any;
 export interface CountriesDataEl {
   country: string;
@@ -30,6 +32,8 @@ const ELEMENT_DATA: CountriesDataEl[] = [
 export class MonoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   completeData: any;
+  innerWidth: any;
+  countryData: any;
   coordinatessubscription: any;
   mapcoordinates: any;
   circleDataSubscription: any;
@@ -133,7 +137,8 @@ export class MonoComponent implements OnInit, OnDestroy, AfterViewInit {
   };
 
 
-  constructor(private dataProvider: DataproviderService) {
+  // tslint:disable-next-line:variable-name
+  constructor(private dataProvider: DataproviderService, private _snackBar: MatSnackBar) {
     this.coordinatessubscription = dataProvider.coordinates$.subscribe((coordinates) => {
       this.mapcoordinates = coordinates;
     });
@@ -144,30 +149,116 @@ export class MonoComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.updatedMins = 1;
+    this.updateTimeUnits = 'Day';
     this.dataProvider.publishCoordinates([23.8859, 45.0792]);
     // this.dataProvider.publishCircleData([[23.8859, 45.0792]]);
     /* Constructor */
     this.digitalClock = new zeu.DigitalClock('clock', this.clockOptions);
-    this.infectionCircle = new zeu.SpeedCircle('infection-circle', this.infectionCircleOptions);
-    this.fatalCircle = new zeu.SpeedCircle('fatal-circle', this.fatalCircleOptions);
-    this.dataProvider.getDataForWorld().subscribe((data) => {
-      this.completeData = JSON.parse(this.csvJSON(data));
+
+    if (this.dataProvider.worldData) {
+      const worldData = JSON.parse(this.csvJSON(this.dataProvider.worldData));
+      // // tslint:disable-next-line:prefer-const
+      // let worldCurrentData = worldData.filter((country) => {
+      //   return country.Date === '2020-06-30';
+      // });
       // tslint:disable-next-line:prefer-const
-      console.log(this.completeData);
+      let worldCurrentData = worldData[worldData.length - 2 ];
+      this.totalNoOfCases = worldCurrentData.Confirmed;
+      this.totalRecoveredCases = worldCurrentData.Recovered;
+      this.totalFatalCases  = worldCurrentData.Deaths;
+      this.totalActiveCases = this.totalNoOfCases - this.totalRecoveredCases - this.totalFatalCases;
+      this.infectionCircleOptions.text.value = parseFloat(worldCurrentData['Increase rate']).toFixed(2);
+      this.infectionCircle = new zeu.SpeedCircle('infection-circle', this.infectionCircleOptions);
+      const fatalRate = (this.totalFatalCases / this.totalNoOfCases) * 100;
+      this.fatalCircleOptions.text.value = fatalRate.toFixed(2);
+      this.fatalCircle = new zeu.SpeedCircle('fatal-circle', this.fatalCircleOptions);
+      // // tslint:disable-next-line:prefer-const
+      // let worldPrevData = worldData.filter((country) => {
+      //   return country.Date === '2020-06-29';
+      // });
       // tslint:disable-next-line:prefer-const
-      let circleData = this.completeData.filter((country) => {
-        // tslint:disable-next-line:quotemark
-        // tslint:disable-next-line:triple-equals
-        return country.Admin2 == '';
+      let worldPrevData = worldData[worldData.length - 3];
+      this.changeInFCases = this.totalFatalCases - worldPrevData.Deaths;
+      this.changeInRCases = this.totalRecoveredCases - worldPrevData.Recovered;
+      this.changeFSymbol = '+';
+      this.changeRSymbol = '+';
+    } else {
+      this.dataProvider.getWorldAggregated().subscribe((wdata) => {
+        const worldData = JSON.parse(this.csvJSON(wdata));
+        // tslint:disable-next-line:prefer-const
+        // let worldCurrentData = worldData.filter((country) => {
+        //   return country.Date === '2020-06-30';
+        // });
+        // tslint:disable-next-line:prefer-const
+        let worldCurrentData = worldData[worldData.length - 2 ];
+        this.totalNoOfCases = worldCurrentData.Confirmed;
+        this.totalRecoveredCases = worldCurrentData.Recovered;
+        this.totalFatalCases = worldCurrentData.Deaths;
+        this.totalActiveCases = this.totalNoOfCases - this.totalRecoveredCases - this.totalFatalCases;
+        this.infectionCircleOptions.text.value = parseFloat(worldCurrentData['Increase rate']).toFixed(2);
+        this.infectionCircle = new zeu.SpeedCircle('infection-circle', this.infectionCircleOptions);
+        const fatalRate = (this.totalFatalCases / this.totalNoOfCases) * 100;
+        this.fatalCircleOptions.text.value = fatalRate.toFixed(2);
+        this.fatalCircle = new zeu.SpeedCircle('fatal-circle', this.fatalCircleOptions);
+        // tslint:disable-next-line:prefer-const
+        let worldPrevData = worldData[worldData.length - 3];
+        // let worldPrevData = worldData.filter((country) => {
+        //   return country.Date === '2020-06-29';
+        // });
+        this.changeInFCases = this.totalFatalCases - worldPrevData.Deaths;
+        this.changeInRCases = this.totalRecoveredCases - worldPrevData.Recovered;
+        this.changeFSymbol = '+';
+        this.changeRSymbol = '+';
       });
-      console.log(circleData);
-      this.dataProvider.publishCircleData(circleData);
-    }, (error) => {
-      console.log(error);
-    });
+    }
+
+    if (this.dataProvider.completeWorldData) {
+      this.countryData = JSON.parse(this.csvJSON(this.dataProvider.completeWorldData));
+
+      const dateDataPick = this.countryData[this.countryData.length - 2];
+      const circleData = this.countryData.filter((country) => {
+        return country.Date === dateDataPick.Date;
+      });
+      if (this.dataProvider.referenceData) {
+        this.dataProvider.publishCircleData(circleData);
+        this.dataProvider.publishCompWorldData(circleData);
+      } else {
+        this.dataProvider.loadCountryRefernceData().subscribe((refdata) => {
+          this.dataProvider.referenceData = refdata;
+          this.dataProvider.publishCircleData(circleData);
+          this.dataProvider.publishCompWorldData(circleData);
+        });
+      }
+    } else {
+      this.dataProvider.getWorldTimeSereies().subscribe((data) => {
+        this.countryData = JSON.parse(this.csvJSON(data));
+        const dateDataPick = this.countryData[this.countryData.length - 2];
+        // tslint:disable-next-line:prefer-const
+        let circleData = this.countryData.filter((country) => {
+          return country.Date === dateDataPick.Date;
+        });
+        if (this.dataProvider.referenceData) {
+          this.dataProvider.publishCircleData(circleData);
+          this.dataProvider.publishCompWorldData(circleData);
+        } else {
+          this.dataProvider.loadCountryRefernceData().subscribe((refdata) => {
+            this.dataProvider.referenceData = refdata;
+            this.dataProvider.publishCircleData(circleData);
+            this.dataProvider.publishCompWorldData(circleData);
+          });
+        }
+      }, (error) => {
+        console.log(error);
+      });
+    }
   }
 
   ngAfterViewInit(): void {
+    // tslint:disable-next-line:max-line-length
+    this._snackBar.open('This website use cookies for anlytics without any obstrucation to the user privacy and by using our website you are agreeing for the same.', 'Agreed', {
+      duration: 2000,
+    });
     // this.dataProvider.publishCircleData([[37.0902, -95.7129], [23.8859, 45.0792], [20.5937, 78.9629]]);
   }
 
@@ -178,6 +269,7 @@ export class MonoComponent implements OnInit, OnDestroy, AfterViewInit {
 
   csvJSON(csv) {
     const lines = csv.split('\n');
+    lines[0] = lines[0].trim();
 
     const result = [];
 

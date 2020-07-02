@@ -29,9 +29,12 @@
             ],
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
+              "./node_modules/@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.css",
               "src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [
+              "./node_modules/@ansur/leaflet-pulse-icon/dist/L.Icon.Pulse.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -123,6 +126,10 @@
               "devServerTarget": "cvd:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "angular-cli-ghpages:deploy",
+          "options": {}
         }
       }
     }

@@ -16,4 +16,49 @@ html, body {
     padding: 0;
     font-family: Roboto, "Helvetica Neue", sans-serif;
 }
+body {
+    background-color: #262626;
+}
 // body {font-family: Roboto, "Helvetica Neue", sans-serif; }
+@keyframes fade { 
+    from { opacity: 0.5; } 
+}
+.blinking {
+    animation: fade 1s infinite alternate;
+}
+
+.popupHeading {
+    font-size: 1.5em;
+    font-weight: 600;
+}
+  
+.popupLabel {
+    font-size: 1.1em;
+    font-weight: 550;
+}
+  
+.popupValue {
+    font-size: 1em;
+    font-weight: 700;
+    color: #f4c363;
+}
+
+.darkblue {
+    color: #013A83;
+}
+.red {
+    color: #ff6464;
+}
+.green {
+    color: #60bb69;
+}
+
+@media (min-width: 575.99px) and (max-width: 991.98px) {
+
+}
+
+@media (max-width: 575.98px) {
+    body {
+        background-color: #262626;
+    }
+}

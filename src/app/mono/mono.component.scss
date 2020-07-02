@@ -4,13 +4,20 @@
     height: 100vh;
 }
 
+.clockcontainer {
+   
+}
+
 .visrey-mono-sidebar {
     // background-color: #353744;
+    margin-top: 1vh;
+    margin-bottom: 1vh;
+    border-radius: 0px 25px 25px 0px;
     background-color: #45474d;
     display: inline-block;
     width: 20%;
-    height: 100%;
-    min-height: 100vh;
+    height: 98vh;
+    min-height: 98vh;
     color: rgb(253, 255, 255);
     vertical-align: top;
     // box-shadow: 10px 0px 15px #000;
@@ -53,6 +60,10 @@
 
 .vsbar-container {
     padding: 10px 20px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px #333333;
+    padding: 0px;
+    margin: 10px 20px;
 }
 
 hr {
@@ -148,3 +159,57 @@ Not supports in Firefox and IE */
 
 /* set button(top and bottom of the scrollbar) */
 .datacontainer::-webkit-scrollbar-button {display:none}
+
+@media (min-width: 575.99px) and (max-width: 991.98px) {
+
+}
+
+@media (max-width: 575.98px) {
+    // .datacontainer {
+    //     height: 00px !important;
+    // }
+    #clock {
+        width: 100px;
+        height: 25px;
+    }
+    #infection-circle, #fatal-circle {
+        width: 100px;
+        height: 100px;
+    }
+    .overlayContainer {
+        height: 137px;
+        width: 100px;
+        left: 50vw;
+    }
+    .firstContainer {
+        top: 10px;
+        left: 5vw;
+    }
+    .secondContainer {
+        top: 10px;
+    }
+    .outline-container {
+        display: flex; 
+        flex-flow: column;
+    }
+    
+    .visrey-mono-sidebar {
+        order: 2;
+        width: 90vw;
+        border-radius: 10px;
+        position: absolute;
+        left: 5vw;
+        top: 78vh;
+        z-index: 1000;
+        height: 120vh;
+    }
+    
+    .visrey-mono-container {
+        order: 1; 
+        height: 80vh;
+        width: 100vw; 
+    }
+    .vsbar-container { 
+        padding: 15px;
+    }
+}

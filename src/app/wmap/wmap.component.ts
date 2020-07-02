@@ -2,6 +2,7 @@ import { element } from 'protractor';
 import { DataproviderService } from './../service/dataprovider.service';
 import { Component, AfterViewInit, OnDestroy } from '@angular/core';
 import * as L from 'leaflet';
+import '@ansur/leaflet-pulse-icon/dist/L.icon.pulse.js';
 
 @Component({
   selector: 'app-wmap',
@@ -34,6 +35,7 @@ export class WmapComponent implements AfterViewInit, OnDestroy {
   private initMap(): void {
     this.map = L.map('map', {
       // center: [23.8859, 45.0792],
+      attributionControl: false,
       center: this.mapcoordinates,
       zoom: 2
     });
@@ -50,6 +52,9 @@ export class WmapComponent implements AfterViewInit, OnDestroy {
     });
 
     tiles.addTo(this.map);
+    L.control.attribution({
+      position: 'topright'
+    }).addTo(this.map);
     // let center = [0, 0];
     // let i = 0;
   }
@@ -68,19 +73,39 @@ export class WmapComponent implements AfterViewInit, OnDestroy {
     this.markersArray = [];
     // let i = 0;
     if (this.circleData !== undefined) {
+    //   console.log(this.dataProvider.referenceData);
       this.circleData.forEach((circleelement) => {
-          const circleMarker = L.circle([circleelement.Lat, circleelement.Long_], 500000, {
-            color: '#bbbbbb',
-            fillColor: '#f4c363',
-            fillOpacity: .2
-          }).bindPopup(
-            '<h1>' + circleelement.Country_Region + '</h1><h5>Confirmed: ' + circleelement.Confirmed
-            + '</h5><h5>Active: ' + circleelement.Active + '</h5>'
-            + '</h5><h5>Recovered: ' + circleelement.Recovered + '</h5>'
-            + '</h5><h5>Deaths: ' + circleelement.Deaths + '</h5>'
-            + '</h5><h5>LastUpdated: ' + circleelement.Last_Update + '</h5>');
-          this.markersArray.push(circleMarker);
-          circleMarker.addTo(this.map);
+        // tslint:disable-next-line:prefer-const
+        let countryData = this.dataProvider.referenceData.filter((country) => {
+            return country.Country_Region === circleelement.Country.replace(/"/g, '');
+        });
+
+        const latlng = L.latLng(countryData[0].Lat, countryData[0].Long_);
+        const pulsingIcon = L.icon.pulse({iconSize: [8, 8], color: 'red'});
+        const circleMarker = L.marker([countryData[0].Lat, countryData[0].Long_], {icon: pulsingIcon});
+
+        //   const circleMarker = L.circle([circleelement.Lat, circleelement.Long_], {
+        //     color: '#f4c363',
+        //     fillColor: '#f4c363',
+        //     // fillOpacity: 0.2,
+        //     className: 'blinking',
+        //     radius: 5000
+        //   });
+        //   const latlng = L.latLng(circleelement.Lat, circleelement.Long_);
+        circleMarker.on('click', () => {
+              this.map.flyTo(latlng, 5);
+        });
+        const currentActive = circleelement.Confirmed - circleelement.Recovered - circleelement.Deaths;
+        circleMarker.bindPopup(
+              '<table><th class="popupHeading" colspan="2">' + countryData[0].Combined_Key.replace(/"/g, '')
+              + '</th><tr><td class="popupLabel">Confirmed:</td><td class="popupValue darkblue">' + circleelement.Confirmed
+              + '</td></tr><tr><td class="popupLabel">Active:</td><td  class="popupValue darkblue">' + currentActive
+              + '</td></tr><tr><td class="popupLabel">Recovered:</td><td  class="popupValue green">' + circleelement.Recovered
+              + '</td></tr><tr><td class="popupLabel">Deaths:</td><td  class="popupValue red">' + circleelement.Deaths
+            //   + '</td></tr><tr><td class="popupLabel">Last Updated:</td><td  class="popupValue">' + circleelement.Last_Update
+              + '</td></tr></table>');
+        this.markersArray.push(circleMarker);
+        circleMarker.addTo(this.map);
           // }).addTo(this.map);
           // i++;
         // }
