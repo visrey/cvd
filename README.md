@@ -2,6 +2,7 @@
 
 My Half Cooked Covid Dashboard read full story at my personal blog or medium blog
 
+[Live DEMO](https://cvd.visrey.me)
 [Personal Blog](https://blog.visrey.me)
 [Medium Blog](https://medium.com/visrey)
 
@@ -17,4 +18,3 @@ My Half Cooked Covid Dashboard read full story at my personal blog or medium blo
 ## Example UI
 
 ![alt text](https://github.com/visrey/cvd/blob/master/screenshots/cvd.gif?raw=true)
-![alt text](https://github.com/visrey/cvd/blob/master/screenshots/1.png?raw=true)
