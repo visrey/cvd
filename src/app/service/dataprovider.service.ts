@@ -63,7 +63,7 @@ export class DataproviderService {
 
   getWorldAggregated(): Observable<any> {
     // tslint:disable-next-line:max-line-length
-    return this.http.get('https://raw.githubusercontent.com/datasets/covid-19/master/data/worldwide-aggregated.csv', {responseType: 'text'});
+    return this.http.get('https://raw.githubusercontent.com/datasets/covid-19/master/data/worldwide-aggregate.csv', {responseType: 'text'});
   }
 
 }
